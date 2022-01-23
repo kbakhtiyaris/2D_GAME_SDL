@@ -17,10 +17,12 @@ GameObject* player;
 GameObject* enemy;*/
 
 Map* map;
+Manager manager;
 
 SDL_Renderer* Game::renderer = nullptr;
+SDL_Event Game::event;
 
-Manager manager;
+
 auto& player(manager.addEntity());
 
 
@@ -67,11 +69,13 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 
 	player.addComponent<TransformComponent>();
 	player.addComponent<SpriteComponent>("assets/player.png");
+	player.addComponent<KeyboardController>();
 }
 
 void Game::handleEvents()
 {
-	SDL_Event event;
+	
+
 	SDL_PollEvent(&event); // this way it will know where it is .
 	switch (event.type)// to find out what type of event it is
 	{
@@ -90,12 +94,15 @@ void Game::update() //initialize SDL
 	cout << cnt << endl;*/
 	manager.refresh();
 	manager.update();
-	player.getComponent<TransformComponent>().position.Add(Vector2D(3, 1));
 
-	if (player.getComponent<TransformComponent>().position.x > 100)
-	{
-		player.getComponent<SpriteComponent>().setTex("assets/enemy.png");
-	}
+	/*updated > modified because it was moving player down the screen
+	and now we have introduces KeyboardController*/
+	//player.getComponent<TransformComponent>().position.Add(Vector2D(3, 1));
+
+	//if (player.getComponent<TransformComponent>().position.x > 100)
+	//{
+	//	player.getComponent<SpriteComponent>().setTex("assets/enemy.png");
+	//}
 
 }
 
