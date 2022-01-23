@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="components.h" />
+    <ClInclude Include="CooliderComponent.h" />
     <ClInclude Include="ESC.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />

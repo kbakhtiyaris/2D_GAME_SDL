@@ -68,5 +68,8 @@
     <ClInclude Include="KeyboardController.h">
       <Filter>Source Files\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="CooliderComponent.h">
+      <Filter>Source Files\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

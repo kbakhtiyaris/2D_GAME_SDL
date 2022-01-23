@@ -36,10 +36,17 @@ Map::Map()
 	LoadMap(lvl1);
 
 	src.x = src.y = 0;
-	src.w = dest.w = 64;
-	src.h = dest.h = 64;
+	src.w = dest.w = 32;
+	src.h = dest.h = 32;
 
 	dest.x = dest.y = 0;
+}
+
+Map::~Map()
+{
+	SDL_DestroyTexture(grass);
+	SDL_DestroyTexture(water);
+	SDL_DestroyTexture(dirt);
 }
 
 void Map::LoadMap(int arr[20][25])
@@ -62,8 +69,8 @@ void Map::DrawMap()
 		for (int column = 0; column < 25; column++)
 		{
 			type = map[row][column];
-			dest.x = column * 64;
-			dest.y = row * 64;
+			dest.x = column * 32;
+			dest.y = row * 32;
 
 			switch (type)
 			{
