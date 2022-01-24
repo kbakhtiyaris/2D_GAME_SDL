@@ -8,6 +8,8 @@
 #include <bitset>
 #include <array>
 
+
+
 class Component;
 class Entity;
 
@@ -67,7 +69,7 @@ public:
 
 	template <typename T> bool hasCompopnent() const
 	{
-		return componentBitSet[getComponentTypeID<T>];
+		return componentBitSet[getComponentTypeID<T>()];
 	}
 
 	template <typename T, typename... TArgs>

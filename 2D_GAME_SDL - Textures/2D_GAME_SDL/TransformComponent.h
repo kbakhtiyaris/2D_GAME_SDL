@@ -18,21 +18,32 @@ public:
 
 	TransformComponent()
 	{
-		position.x = 0.0f;
-		position.y = 0.0f;
+		position.Zero();
+	}
+	TransformComponent(int sc)
+	{
+		position.Zero();
+		scale = sc;
 	}
 
 	TransformComponent(float x, float y)
 	{
+		position.Zero();
+	}
+
+	TransformComponent(float x, float y, int h, int w, int sc)
+	{
 		position.x = x;
 		position.y = y;
+		height = h;
+		width = w;
+		scale = sc;
 	}
 	// expose and our x and y position
 	
 	void init() override
 	{
-		velocity.x = 0;
-		velocity.y = 0;
+		velocity.Zero();
 	}
 
 	void update() override
