@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	
 	game->init("bakhtiyars engine", 800, 640, false);
 	
-	while (game->running()) // it will run until is running is truw
+	while (1) // it will run until is running is true
 	{
 		frameStart = SDL_GetTicks();
 

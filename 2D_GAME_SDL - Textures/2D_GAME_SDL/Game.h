@@ -22,10 +22,9 @@ public:
 	void update(); //this will list go through all  our game objects and update them all
 	void render();
 	void clean(); // do some memory management clears obj from memory once you're finished with them
-	bool running()// lets the main function know that the game should still be running
-	{
-		return isRunning;
-	}
+	//bool running();// lets the main function know that the game should still be running
+	
+	static void AddTile(int id, int x, int y);;
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
