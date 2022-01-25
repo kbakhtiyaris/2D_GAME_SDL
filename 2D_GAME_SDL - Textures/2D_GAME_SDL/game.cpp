@@ -16,7 +16,7 @@ SDL_Rect srcR, destR ;
 GameObject* player;
 GameObject* enemy;*/
 
-Map* map;
+Map* myMap;
 Manager manager;
 
 SDL_Renderer* Game::renderer = nullptr;
@@ -57,7 +57,7 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
-		cout << "Subsystem initialised!...." << endl;
+		//cout << "Subsystem initialised!...." << endl;
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 		renderer = SDL_CreateRenderer(window, -1, 0);
 		
@@ -79,7 +79,7 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 		//playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 		//SDL_FreeSurface(tmpSurface);
 	
-	map = new Map();
+	myMap = new Map();
 
 	Map::LoadMap("assets/p16x16.map", 16, 16);
 
@@ -91,7 +91,7 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 	//tile2.addComponent<ColliderComponent>("grass");
 
 	player.addComponent<TransformComponent>(2);
-	player.addComponent<SpriteComponent>("assets/player_idle.png", 4, 100);
+	player.addComponent<SpriteComponent>("assets/player_anims.png", true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
