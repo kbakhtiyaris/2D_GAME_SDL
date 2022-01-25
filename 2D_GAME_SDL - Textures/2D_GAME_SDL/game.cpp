@@ -22,10 +22,16 @@ Manager manager;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
+SDL_Rect Game::camera = { 0, 0 , 800, 640 };
+
 std::vector<ColliderComponent*> Game::colliders; 
+
+bool Game::isRunning = false;
 
 auto& player(manager.addEntity());
 auto& wall(manager.addEntity());
+
+const char* mapfile = "assets/terrain_ss.png";
 
 enum groupLables : std::size_t
 {
@@ -35,17 +41,19 @@ enum groupLables : std::size_t
 	groupColliders
 };
 
+auto& tiles(manager.getGroup(groupMap));// this will pass into here all the tiles into the group
+auto& players(manager.getGroup(groupPlayers));
+auto& enemies(manager.getGroup(groupEnemies));
+
 //auto& tile0(manager.addEntity());
 //auto& tile1(manager.addEntity());
 //auto& tile2(manager.addEntity());
 
 Game::Game()
-{
-}
+{}
 
 Game::~Game()
-{
-}
+{}
 
 void Game::init(const char* title,int width, int height, bool fullscreen) // declare init
 {
@@ -81,7 +89,7 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 	
 	myMap = new Map();
 
-	Map::LoadMap("assets/p16x16.map", 16, 16);
+	Map::LoadMap("assets/map.map",25 , 20);
 
 	//esc omplementations
 	//tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
@@ -90,16 +98,16 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 	//tile2.addComponent<TileComponent>(150, 150, 32, 32, 2);
 	//tile2.addComponent<ColliderComponent>("grass");
 
-	player.addComponent<TransformComponent>(2);
+	player.addComponent<TransformComponent>(4);
 	player.addComponent<SpriteComponent>("assets/player_anims.png", true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
 
-	wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
+	/*wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
 	wall.addComponent<SpriteComponent>("assets/dirt.png");
 	wall.addComponent<ColliderComponent>("wall");
-	wall.addGroup(groupMap);
+	wall.addGroup(groupMap);*/
 }
 
 void Game::handleEvents()
@@ -125,17 +133,43 @@ void Game::update() //initialize SDL
 	manager.refresh();
 	manager.update();
 
+	camera.x = player.getComponent<TransformComponent>().position.x - 400;
+	camera.y = player.getComponent<TransformComponent>().position.y - 320;
+
+	if (camera.x < 0)
+		camera.x = 0;
+	if (camera.y < 0)
+		camera.y = 0;
+	if (camera.x > camera.w)
+		camera.x = camera.w;
+	if (camera.y > camera.h)
+		camera.y = camera.h;
+
+
+	/*Vector2D pVel = player.getComponent<TransformComponent>().velocity;
+	int pSpeed = player.getComponent<TransformComponent>().speed;
+
+	for (auto t : tiles)
+	{
+		t->getComponent<TileComponent>().destRect.x += -(pVel.x * pSpeed);
+		t->getComponent<TileComponent>().destRect.y += -(pVel.y * pSpeed);
+	}*/
+
+
+
+
+
 	//if (Collision::AABB(player.getComponent<ColliderComponent>().collider,
 		//wall.getComponent<ColliderComponent>().collider))
-	for (auto cc : colliders)
+	/*for (auto cc : colliders)
 	{
-		/*if*/ Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
+		if Collision::AABB(player.getComponent<ColliderComponent>(), *cc);
 			//{
 				//player.getComponent<TransformComponent>().scale = 1;
 				//player.getComponent<TransformComponent>().velocity * -1;
 				//cout << "wall hit!" << endl;
 			//}
-	}
+	}*/
 	/*updated > modified because it was moving player down the screen
 	and now we have introduces KeyboardController*/
 	//player.getComponent<TransformComponent>().position.Add(Vector2D(3, 1));
@@ -147,9 +181,7 @@ void Game::update() //initialize SDL
 
 }
 
-auto& tiles(manager.getGroup(groupMap));// this will pass into here all the tiles into the group
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
+
 
 
 void Game::render()// render our obj to the screen
@@ -185,9 +217,9 @@ void Game::clean()
 	SDL_Quit();
 	cout << "Game cleaned" << endl;
 }
-void Game::AddTile(int id, int x, int y)
+void Game::AddTile(int srcX, int srcY, int xpos, int ypos)
 {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(x, y, 32, 32, id);
+	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, mapfile);
 	tile.addGroup(groupMap);
 }

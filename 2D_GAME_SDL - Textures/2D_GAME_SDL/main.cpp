@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "SDL.h"
+using namespace std;
 
 Game *game = nullptr; // instance of game //  null pointer for now
 int main(int argc, char* argv[])
@@ -14,7 +15,7 @@ int main(int argc, char* argv[])
 	
 	game->init("bakhtiyars engine", 800, 640, false);
 	
-	while (1) // it will run until is running is true
+	while (game->running()) // it will run until is running is true
 	{
 		frameStart = SDL_GetTicks();
 

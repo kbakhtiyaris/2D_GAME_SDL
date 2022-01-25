@@ -54,7 +54,7 @@ public:
 			case SDLK_a:
 				transform->velocity.x = 0;
 				sprite->Play("Idle");
-				sprite->spriteFlip = SDL_FLIP_NONE;
+				sprite->spriteFlip = SDL_FLIP_NONE;   
 				break;
 			case SDLK_d:
 				transform->velocity.x = 0;
@@ -64,12 +64,14 @@ public:
 				transform->velocity.y = 0;
 				sprite->Play("Idle");
 				break;
+			case SDLK_ESCAPE:
+				Game::isRunning = false;
 			default:
 				break;
 			}
 		}
 
-		if (Game::event.type == SDL_KEYUP)
+		/*if (Game::event.type == SDL_KEYUP)
 		{
 			switch (Game::event.key.keysym.sym)
 			{
@@ -79,7 +81,7 @@ public:
 			default:
 				break;
 			}
-		}
+		}*/
 
 
 	}
