@@ -6,6 +6,8 @@
 #include "components.h"
 #include "Vector2D.h"
 #include "Collision.h"
+#include "AssetManager.h"
+#include "ProjectileComponent.h"
 
 using namespace std;
 
@@ -24,26 +26,13 @@ SDL_Event Game::event;
 
 SDL_Rect Game::camera = { 0, 0 , 800, 640 };
 
-std::vector<ColliderComponent*> Game::colliders; 
+AssetManager* Game::assets = new AssetManager(&manager);
 
 bool Game::isRunning = false;
 
 auto& player(manager.addEntity());
-auto& wall(manager.addEntity());
 
-const char* mapfile = "assets/terrain_ss.png";
 
-enum groupLables : std::size_t
-{
-	groupMap,
-	groupPlayers,
-	groupEnemies,
-	groupColliders
-};
-
-auto& tiles(manager.getGroup(groupMap));// this will pass into here all the tiles into the group
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
 
 //auto& tile0(manager.addEntity());
 //auto& tile1(manager.addEntity());
@@ -87,9 +76,14 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 		//playerTex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 		//SDL_FreeSurface(tmpSurface);
 	
-	myMap = new Map();
+	assets->AddTexture("terrain", "assets/terrain_ss.png");
+	assets->AddTexture("player", "assets/player_anims.png");
 
-	Map::LoadMap("assets/map.map",25 , 20);
+	assets->AddTexture("projectile", "assets/proj.png");
+
+	myMap = new Map("terrain", 3, 32);
+
+	myMap->LoadMap("assets/map.map",25 , 20);
 
 	//esc omplementations
 	//tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
@@ -98,22 +92,32 @@ void Game::init(const char* title,int width, int height, bool fullscreen) // dec
 	//tile2.addComponent<TileComponent>(150, 150, 32, 32, 2);
 	//tile2.addComponent<ColliderComponent>("grass");
 
-	player.addComponent<TransformComponent>(4);
-	player.addComponent<SpriteComponent>("assets/player_anims.png", true);
+	player.addComponent<TransformComponent>(800.0f, 640.0f, 32, 32, 4);
+	player.addComponent<SpriteComponent>("player", true);
 	player.addComponent<KeyboardController>();
 	player.addComponent<ColliderComponent>("player");
 	player.addGroup(groupPlayers);
-
+	
+	
+	assets->CreateProjectile(Vector2D(600, 600), Vector2D(2, 0), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600, 620), Vector2D(2, 0), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(400, 600), Vector2D(2, 1), 200, 2, "projectile");
+	assets->CreateProjectile(Vector2D(600, 600), Vector2D(2, -1), 200, 2, "projectile");
+	
 	/*wall.addComponent<TransformComponent>(300.0f, 300.0f, 300, 20, 1);
 	wall.addComponent<SpriteComponent>("assets/dirt.png");
 	wall.addComponent<ColliderComponent>("wall");
 	wall.addGroup(groupMap);*/
 }
 
+auto& tiles(manager.getGroup(Game::groupMap));// this will pass into here all the tiles into the group
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
+auto& projectiles(manager.getGroup(Game::groupProjectiles));
+
 void Game::handleEvents()
 {
 	
-
 	SDL_PollEvent(&event); // this way it will know where it is .
 	switch (event.type)// to find out what type of event it is
 	{
@@ -130,8 +134,30 @@ void Game::update() //initialize SDL
 	destR.w = 64;
 	destR.x = cnt;
 	cout << cnt << endl;*/
+	SDL_Rect playerCol = player.getComponent<ColliderComponent>().collider;
+	Vector2D playerPos = player.getComponent<TransformComponent>().position;
+
+
 	manager.refresh();
 	manager.update();
+
+	for (auto& c : colliders)
+	{
+		SDL_Rect cCol = c->getComponent<ColliderComponent>().collider;
+		if (Collision::AABB(cCol, playerCol))
+		{
+			player.getComponent<TransformComponent>().position = playerPos;
+		}
+	}
+
+	for (auto& p : projectiles)
+	{
+		if (Collision::AABB(player.getComponent<ColliderComponent>().collider, p->getComponent<ColliderComponent>().collider))
+		{
+			std::cout << "hit player" << std::endl;
+			p->destroy();
+		}
+	}
 
 	camera.x = player.getComponent<TransformComponent>().position.x - 400;
 	camera.y = player.getComponent<TransformComponent>().position.y - 320;
@@ -196,14 +222,20 @@ void Game::render()// render our obj to the screen
 		t->draw();
 	 }
 
+	/*for (auto& c : colliders)
+	{
+		c->draw();
+	}*/
+
+
 	for (auto& p : players)
 	{
 		p->draw();
 	}
 
-	for (auto& e : enemies)
+	for (auto& p : projectiles)
 	{
-		e->draw();
+		p->draw();
 	}
 
 	// this is where we would add stuff to render
@@ -217,9 +249,7 @@ void Game::clean()
 	SDL_Quit();
 	cout << "Game cleaned" << endl;
 }
-void Game::AddTile(int srcX, int srcY, int xpos, int ypos)
+/*void Game::AddTile(int srcX, int srcY, int xpos, int ypos)
 {
-	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, xpos, ypos, mapfile);
-	tile.addGroup(groupMap);
-}
+	  taken to map.cpp
+}*/

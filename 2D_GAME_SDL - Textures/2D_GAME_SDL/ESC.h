@@ -19,7 +19,7 @@ using Group = std::size_t;
 
 inline ComponentID getNewComponentTypeID()
 {
-	static ComponentID lastID = 0;
+	static ComponentID lastID = 0u;
 	return lastID++;
 }
 

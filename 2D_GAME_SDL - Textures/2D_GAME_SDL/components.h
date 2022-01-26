@@ -7,5 +7,5 @@
 #include "KeyboardController.h"
 #include "CooliderComponent.h"
 #include "TileComponent.h"
-
+#include "ProjectileComponent.h"
 

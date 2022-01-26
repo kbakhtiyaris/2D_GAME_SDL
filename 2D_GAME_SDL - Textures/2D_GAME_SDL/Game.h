@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-
+class AssetManager;
 class ColliderComponent;
 
 
@@ -23,12 +23,23 @@ public:
 	void clean(); // do some memory management clears obj from memory once you're finished with them
 	bool running() { return isRunning; }// lets the main function know that the game should still be running
 	
-	static void AddTile(int srcX, int srcY, int xpos, int ypos);;
+	// this lines is been taken to Game.h
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	static std::vector<ColliderComponent*> colliders;
+	//static std::vector<ColliderComponent*> colliders;
 	 static bool isRunning;
 	 static SDL_Rect camera;
+	 static AssetManager *assets;
+
+
+	 enum groupLables : std::size_t
+	 {
+		 groupMap,
+		 groupPlayers,
+		 groupColliders,
+		 groupProjectiles
+	 };
+
 private:
 
 	int cnt = 0;

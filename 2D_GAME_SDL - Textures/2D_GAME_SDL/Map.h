@@ -4,13 +4,17 @@
 class Map
 {
 public:
-	Map(); // constructor
+	Map(std::string tID, int ms, int ts); // constructor
 	~Map(); //destructor
 
-	static void LoadMap(std::string path, int sizeX, int sizeY);
+	 void LoadMap(std::string path, int sizeX, int sizeY);
+	 void AddTile(int srcX, int srcY, int xpos, int ypos);
 	//void DrawMap();
 private:
-
+	std::string texID;
+	int mapScale;
+	int tileSize;
+	int scaledSize;
 	//SDL_Rect src, dest;
 
 //	SDL_Texture* dirt;
